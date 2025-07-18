@@ -9,5 +9,5 @@ enum FitStrategy {
   fill,
 
   /// The video won’t resize to fit its parent container.
-  none
+  none,
 }

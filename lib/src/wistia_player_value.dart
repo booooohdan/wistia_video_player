@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:wistia_video_player/src/wistia_meta_data.dart';
 import 'package:wistia_video_player/src/enums/fit_strategy.dart';
@@ -34,7 +33,7 @@ class WistiaPlayerValue {
   final bool fullscreenOnRotateToLandscape;
   final bool googleAnalytics;
   final bool muted;
-  final playbackRateControl;
+  final bool playbackRateControl;
   final bool playbar;
 
   final bool playButton;
@@ -138,14 +137,14 @@ class WistiaPlayerValue {
   final String? errorMessage;
 
   get getEndVideoBehavior {
-    String behavior = describeEnum(this.endVideoBehavior);
+    String behavior = endVideoBehavior.name;
     if (behavior == 'wsDefault') {
       return 'default';
     }
     return behavior;
   }
 
-  get getFitStrategy => describeEnum(this.fitStrategy);
+  get getFitStrategy => fitStrategy.name;
 
   WistiaPlayerValue({
     this.autoPlay = true,
@@ -290,16 +289,16 @@ class WistiaPlayerValue {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
 
     data['autoPlay'] = autoPlay;
     data['controlsVisibleOnLoad'] = controlsVisibleOnLoad;
     data['copyLinkAndThumbnailEnabled'] = copyLinkAndThumbnailEnabled;
     data['doNotTrack'] = doNotTrack;
     data['email'] = email;
-    data['endVideoBehavior'] = this.getEndVideoBehavior;
+    data['endVideoBehavior'] = getEndVideoBehavior;
     data['fakeFullScreen'] = fakeFullScreen;
-    data['fitStrategy'] = describeEnum(fitStrategy);
+    data['fitStrategy'] = fitStrategy.name;
     data['fullscreenButton'] = fullscreenButton;
     data['fullscreenOnRotateToLandscape'] = fullscreenOnRotateToLandscape;
     data['googleAnalytics'] = googleAnalytics;
@@ -312,7 +311,7 @@ class WistiaPlayerValue {
     data['playlistLoop'] = playlistLoop;
     data['playsinline'] = playsinline;
     data['playSuspendedOffScreen'] = playSuspendedOffScreen;
-    data['preload'] = describeEnum(preload);
+    data['preload'] = preload.name;
     data['qualityControl'] = qualityControl;
     data['qualityMax'] = qualityMax;
     data['qualityMin'] = qualityMin;

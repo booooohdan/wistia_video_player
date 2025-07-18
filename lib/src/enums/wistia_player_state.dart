@@ -9,5 +9,5 @@ enum WistiaPlayerState {
   paused,
 
   /// Denotes state when player has ended playing video.
-  ended
+  ended,
 }

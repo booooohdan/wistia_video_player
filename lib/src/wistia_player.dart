@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -7,14 +8,12 @@ import 'wistia_player_controller.dart';
 import 'wistia_meta_data.dart';
 
 class WistiaPlayer extends StatefulWidget {
-  /// Sets [Key] as an identification to underlying web view associated to the Wistia player.
-  final Key? key;
   final WistiaPlayerController controller;
 
   final void Function(WistiaMetaData metaData)? onEnded;
 
   /// Creates a [WistiaPlayer] widget.
-  WistiaPlayer({this.key, this.onEnded, required this.controller});
+  const WistiaPlayer({super.key, this.onEnded, required this.controller});
 
   /// Converts fully qualified Wistia Url to video id.
   ///
@@ -43,7 +42,7 @@ class WistiaPlayer extends StatefulWidget {
   }
 
   @override
-  _WistiaPlayerState createState() => _WistiaPlayerState();
+  State<WistiaPlayer> createState() => _WistiaPlayerState();
 }
 
 class _WistiaPlayerState extends State<WistiaPlayer>
@@ -63,7 +62,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     WidgetsBinding.instance.addObserver(this);
 
     if (!widget.controller.hasDisposed) {
-      this.controller = widget.controller..addListener(listener);
+      controller = widget.controller..addListener(listener);
     }
 
     // Initialize WebViewController
@@ -84,7 +83,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
               }
             case 'Ended':
               {
-                print('Video has ended');
+                log('Video has ended');
                 if (widget.onEnded != null) {
                   widget.onEnded!(WistiaMetaData.fromJson(jsonMessage));
                 }
@@ -120,7 +119,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
                 errorMessage: error.description,
               ),
             );
-            print(error);
+            log(error.description);
           },
         ),
       );

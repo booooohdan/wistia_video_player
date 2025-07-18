@@ -6,5 +6,5 @@ enum EndVideoBehavior {
   reset,
 
   /// The video plays again from the beginning
-  loop
+  loop,
 }

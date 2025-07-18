@@ -1,5 +1,3 @@
-library wistia_video_player;
-
 export 'src/wistia_player.dart';
 export 'src/wistia_player_controller.dart';
 export 'src/wistia_player_options.dart';

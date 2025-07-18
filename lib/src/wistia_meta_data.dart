@@ -9,17 +9,21 @@ class WistiaMetaData {
   final Duration duration;
 
   /// Create [WistiaMetaData] for the a Wistia video.
-  WistiaMetaData(
-      {this.videoId = '', this.title = '', this.duration = const Duration()});
+  WistiaMetaData({
+    this.videoId = '',
+    this.title = '',
+    this.duration = const Duration(),
+  });
 
   /// Create [WistiaMetaData] from raw json
   factory WistiaMetaData.fromJson(Map<String, dynamic> data) {
     final durationInMs = (((data['duration'] ?? 0) as double) * 1000).floor();
 
     return WistiaMetaData(
-        videoId: data['videoId'],
-        title: data['title'],
-        duration: Duration(milliseconds: durationInMs));
+      videoId: data['videoId'],
+      title: data['title'],
+      duration: Duration(milliseconds: durationInMs),
+    );
   }
 
   @override

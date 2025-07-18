@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:wistia_video_player/src/enums/end_video_behavior.dart';
 import 'package:wistia_video_player/src/enums/fit_strategy.dart';
 import 'package:wistia_video_player/src/enums/preload.dart';
@@ -22,7 +21,7 @@ class WistiaPlayerOptions {
   final bool fullscreenButton;
   final bool fullscreenOnRotateToLandscape;
   final bool googleAnalytics;
-  final playbackRateControl;
+  final bool playbackRateControl;
   final bool playbar;
   final bool playButton;
 
@@ -157,7 +156,7 @@ class WistiaPlayerOptions {
   });
 
   get getEndVideoBehavior {
-    String behavior = describeEnum(this.endVideoBehavior);
+    String behavior = endVideoBehavior.name;
     if (behavior == 'wsDefault') {
       return 'default';
     }
@@ -171,7 +170,7 @@ class WistiaPlayerOptions {
       'resumable=$resumable',
       'playerColor=$playerColor',
       'endVideoBehavior=$getEndVideoBehavior',
-      'playbar=$playbar'
+      'playbar=$playbar',
     ];
     return values.join(' ');
   }

@@ -7,5 +7,5 @@ enum Preload {
   auto,
 
   /// No data, other than the bare minimum to render a video player on the page, is preloaded
-  none
+  none,
 }
