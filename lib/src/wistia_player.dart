@@ -230,7 +230,6 @@ class _WistiaPlayerState extends State<WistiaPlayer>
                 margin: 0;
                 padding: 0;
                 background-color: #000000;
-                opacity: 0;
                 overflow: hidden;
                 position: fixed;
                 height: 100%;
@@ -246,9 +245,9 @@ class _WistiaPlayerState extends State<WistiaPlayer>
             <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
         </head>
         <body>
-           <script src="https://fast.wistia.com/embed/medias/${controller.videoId}.jsonp" async></script>
-           <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
-           <div class="wistia_embed wistia_async_${controller.videoId} ${controller.options.toString()} player">&nbsp;</div>
+          <script src="https://fast.wistia.com/embed/medias/${controller.videoId}.jsonp" async></script>
+          <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+          <div class="wistia_embed wistia_async_${controller.videoId} ${controller.options.toString()} player">&nbsp;</div>
           <script>
           window._wq = window._wq || [];
           _wq.push({
@@ -264,7 +263,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
                 video.bind('pause', function() {
                   sendMessageToDart('Paused');
                 });
-                
+
                 video.bind("end", function(endTime) {
                   sendMessageToDart('Ended', { endTime: endTime });
                 });
@@ -322,7 +321,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
                 window.duration = function duration() {
                   return video.duration();
                 };
-              },
+              }
           });
 
           function sendMessageToDart(methodName, argsObject = {}) {

@@ -102,7 +102,7 @@ class WistiaPlayerOptions {
   /// When set to true, the video will monitor the width of its parent element.
   /// When that width changes, the video will match that width and modify its height to maintain the correct aspect ratio.
   /// You can set maximum or minimum widths and heights that videoFoam will honor.
-  final dynamic videoFoam;
+  final bool videoFoam;
 
   /// Set the volume of the video. Expects an integer value between 0 and 1.
   /// This is equivalent to running video.volume(v) immediately after initialization.
@@ -125,7 +125,7 @@ class WistiaPlayerOptions {
     this.doNotTrack = false,
     this.email,
     this.endVideoBehavior = EndVideoBehavior.wsDefault,
-    this.fakeFullScreen = false,
+    this.fakeFullScreen = true,
     this.fitStrategy = FitStrategy.contain,
     this.fullscreenButton = true,
     this.fullscreenOnRotateToLandscape = true,
@@ -143,14 +143,14 @@ class WistiaPlayerOptions {
     this.qualityMax = 1080,
     this.qualityMin = 720,
     this.resumable = true,
-    this.seo = false,
+    this.seo = true,
     this.settingsControl = true,
     this.silentAutoPlay = 'allow',
-    this.smallPlayButton = false,
+    this.smallPlayButton = true,
     this.stillUrl,
     this.time,
     this.thumbnailAltText,
-    this.videoFoam,
+    this.videoFoam = true,
     this.volume = 1,
     this.volumeControl = true,
     this.wmode = 'transparent',
