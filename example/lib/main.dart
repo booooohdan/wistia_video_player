@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 class VideoPlayerPage extends StatefulWidget {
   final String videoId;
 
-  const VideoPlayerPage({Key? key, required this.videoId}) : super(key: key);
+  const VideoPlayerPage({super.key, required this.videoId});
 
   @override
   State<VideoPlayerPage> createState() => _VideoPlayerPageState();

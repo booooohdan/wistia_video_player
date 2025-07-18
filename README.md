@@ -1,6 +1,9 @@
 # Wistia Video Player
 
-A simple Flutter widget for embedding Wistia videos with full customization support. This package provides an easy-to-use player with comprehensive controls and options for Wistia video integration.
+A simple Flutter widget for embedding Wistia videos with full customization support
+
+**Learn about all available Wistia player options and advanced embed features in the official documentation:**  
+[Wistia Embed Options and Plugins Documentation](https://docs.wistia.com/docs/embed-options-and-plugins#list-of-all-options)
 
 ## Features
 

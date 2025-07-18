@@ -1,6 +1,6 @@
 /// The values true and false are synonymous with auto and none, respectively.
 enum Preload {
-  /// Only vide metadata is preloaded
+  /// Only video metadata is preloaded
   metadata,
 
   /// All data is preloaded

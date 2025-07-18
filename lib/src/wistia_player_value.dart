@@ -1,6 +1,4 @@
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:wistia_video_player/src/wistia_meta_data.dart';
-import 'package:wistia_video_player/src/enums/fit_strategy.dart';
 import 'package:wistia_video_player/wistia_video_player.dart';
 
 class WistiaPlayerValue {

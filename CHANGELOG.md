@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Added prominent link and improved description for Wistia embed options documentation in README
+
 ## 1.0.0
 
 * Initial release of Wistia Video Player
