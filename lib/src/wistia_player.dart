@@ -51,7 +51,6 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     with WidgetsBindingObserver {
   WistiaPlayerController? controller;
   WistiaPlayerState? _cachedPlayerState;
-  bool _initialLoad = true;
   late final WebViewController _webViewController;
 
   String? _getUserAgent() => controller!.options.forceHD
@@ -64,7 +63,7 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     WidgetsBinding.instance.addObserver(this);
 
     if (!widget.controller.hasDisposed) {
-      controller = widget.controller..addListener(listener);
+      controller = widget.controller;
     }
 
     // Initialize platform-specific WebViewController
@@ -158,59 +157,10 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     );
   }
 
-  void listener() async {
-    if (controller == null) return;
-    if (_initialLoad) {
-      _initialLoad = false;
-      controller?.updateValue(
-        controller!.value.copyWith(
-          autoPlay: controller?.options.autoPlay,
-          controlsVisibleOnLoad: controller?.options.controlsVisibleOnLoad,
-          copyLinkAndThumbnailEnabled:
-              controller?.options.copyLinkAndThumbnailEnabled,
-          doNotTrack: controller?.options.doNotTrack,
-          email: controller?.options.email,
-          endVideoBehavior: controller?.options.endVideoBehavior,
-          fakeFullScreen: controller?.options.fakeFullScreen,
-          fitStrategy: controller?.options.fitStrategy,
-          fullscreenButton: controller?.options.fullscreenButton,
-          fullscreenOnRotateToLandscape:
-              controller?.options.fullscreenOnRotateToLandscape,
-          googleAnalytics: controller?.options.googleAnalytics,
-          playbackRateControl: controller?.options.playbackRateControl,
-          playbar: controller?.options.playbar,
-          playButton: controller?.options.playButton,
-          playerColor: controller?.options.playerColor,
-          playlistLinks: controller?.options.playlistLinks,
-          playlistLoop: controller?.options.playlistLoop,
-          playsinline: controller?.options.playsinline,
-          playSuspendedOffScreen: controller?.options.playSuspendedOffScreen,
-          preload: controller?.options.preload,
-          qualityControl: controller?.options.qualityControl,
-          qualityMax: controller?.options.qualityMax,
-          qualityMin: controller?.options.qualityMin,
-          resumable: controller?.options.resumable,
-          seo: controller?.options.seo,
-          settingsControl: controller?.options.settingsControl,
-          silentAutoPlay: controller?.options.silentAutoPlay,
-          smallPlayButton: controller?.options.smallPlayButton,
-          stillUrl: controller?.options.stillUrl,
-          time: controller?.options.time,
-          thumbnailAltText: controller?.options.thumbnailAltText,
-          videoFoam: controller?.options.videoFoam,
-          volume: controller?.options.volume,
-          volumeControl: controller?.options.volumeControl,
-          wmode: controller?.options.wmode,
-        ),
-      );
-    }
-  }
-
   @override
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    controller?.removeListener(listener);
   }
 
   @override
