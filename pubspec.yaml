@@ -1,5 +1,5 @@
 name: wistia_video_player
-version: 1.0.1
+version: 1.1.0
 description: "Simple Flutter widget for embedding Wistia videos with full customization support"
 homepage: https://github.com/booooohdan/wistia_video_player
 repository: https://github.com/booooohdan/wistia_video_player
@@ -10,9 +10,11 @@ environment:
   flutter: ">=3.27.0"
 
 dependencies:
-  webview_flutter: ^4.10.0
   flutter:
     sdk: flutter
+  webview_flutter: ^4.13.0
+  webview_flutter_android: ^4.10.2
+  webview_flutter_wkwebview: ^3.23.1
 
 dev_dependencies:
   flutter_test:

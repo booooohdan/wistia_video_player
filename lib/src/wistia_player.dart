@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:wistia_video_player/src/enums/wistia_player_state.dart';
 import 'wistia_player_controller.dart';
 import 'wistia_meta_data.dart';
@@ -65,64 +67,81 @@ class _WistiaPlayerState extends State<WistiaPlayer>
       controller = widget.controller..addListener(listener);
     }
 
-    // Initialize WebViewController
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent(_getUserAgent())
-      ..addJavaScriptChannel(
-        'WistiaWebView',
-        onMessageReceived: (JavaScriptMessage message) {
-          Map<String, dynamic> jsonMessage = jsonDecode(message.message);
-          switch (jsonMessage['method']) {
-            case 'Ready':
-              {
-                controller?.updateValue(
-                  controller!.value.copyWith(isReady: true),
-                );
-                break;
-              }
-            case 'Ended':
-              {
-                log('Video has ended');
-                if (widget.onEnded != null) {
-                  widget.onEnded!(WistiaMetaData.fromJson(jsonMessage));
-                }
-                break;
-              }
-            case 'Playing':
-              {
-                controller?.updateValue(
-                  controller!.value.copyWith(
-                    playerState: WistiaPlayerState.playing,
-                  ),
-                );
-                break;
-              }
-            case 'Paused':
-              {
-                controller?.updateValue(
-                  controller!.value.copyWith(
-                    playerState: WistiaPlayerState.paused,
-                  ),
-                );
-                break;
-              }
-          }
-        },
-      )
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onWebResourceError: (WebResourceError error) {
-            controller?.updateValue(
-              controller!.value.copyWith(
-                errorCode: error.errorCode,
-                errorMessage: error.description,
-              ),
-            );
-            log(error.description);
-          },
-        ),
+    // Initialize platform-specific WebViewController
+    late final PlatformWebViewControllerCreationParams params;
+
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
+    } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
+      params = AndroidWebViewControllerCreationParams();
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+
+    _webViewController = WebViewController.fromPlatformCreationParams(params);
+    _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
+    _webViewController.setUserAgent(_getUserAgent());
+    _webViewController.addJavaScriptChannel(
+      'WistiaWebView',
+      onMessageReceived: (JavaScriptMessage message) {
+        Map<String, dynamic> jsonMessage = jsonDecode(message.message);
+        switch (jsonMessage['method']) {
+          case 'Ready':
+            {
+              controller?.updateValue(
+                controller!.value.copyWith(isReady: true),
+              );
+              break;
+            }
+          case 'Ended':
+            {
+              log('Video has ended');
+              if (widget.onEnded != null) {
+                widget.onEnded!(WistiaMetaData.fromJson(jsonMessage));
+              }
+              break;
+            }
+          case 'Playing':
+            {
+              controller?.updateValue(
+                controller!.value.copyWith(
+                  playerState: WistiaPlayerState.playing,
+                ),
+              );
+              break;
+            }
+          case 'Paused':
+            {
+              controller?.updateValue(
+                controller!.value.copyWith(
+                  playerState: WistiaPlayerState.paused,
+                ),
+              );
+              break;
+            }
+        }
+      },
+    );
+    _webViewController.setNavigationDelegate(
+      NavigationDelegate(
+        onWebResourceError: (WebResourceError error) {
+          controller?.updateValue(
+            controller!.value.copyWith(
+              errorCode: error.errorCode,
+              errorMessage: error.description,
+            ),
+          );
+          log(error.description);
+        },
+      ),
+    );
+    if (_webViewController.platform is AndroidWebViewController) {
+      (_webViewController.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
 
     // Load the HTML content
     if (controller != null) {
