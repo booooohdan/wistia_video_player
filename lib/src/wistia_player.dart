@@ -8,6 +8,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:wistia_video_player/src/enums/wistia_player_state.dart';
 import 'wistia_player_controller.dart';
 import 'wistia_meta_data.dart';
+import 'wistia_player_value.dart';
 
 class WistiaPlayer extends StatefulWidget {
   final WistiaPlayerController controller;
@@ -64,6 +65,13 @@ class _WistiaPlayerState extends State<WistiaPlayer>
 
     if (!widget.controller.hasDisposed) {
       controller = widget.controller;
+      // Set initial loading state
+      controller?.updateValue(
+        controller!.value.copyWith(
+          playerState: WistiaPlayerState.loading,
+          isReady: false,
+        ),
+      );
     }
 
     // Initialize platform-specific WebViewController
@@ -91,7 +99,10 @@ class _WistiaPlayerState extends State<WistiaPlayer>
           case 'Ready':
             {
               controller?.updateValue(
-                controller!.value.copyWith(isReady: true),
+                controller!.value.copyWith(
+                  isReady: true,
+                  playerState: WistiaPlayerState.beforeplay,
+                ),
               );
               break;
             }
@@ -184,7 +195,38 @@ class _WistiaPlayerState extends State<WistiaPlayer>
 
   @override
   Widget build(BuildContext context) {
-    return WebViewWidget(key: widget.key, controller: _webViewController);
+    if (controller == null) {
+      return Container(
+        color: Colors.black,
+        child: const Center(
+          child: CircularProgressIndicator.adaptive(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 3.0,
+          ),
+        ),
+      );
+    }
+
+    return ValueListenableBuilder<WistiaPlayerValue>(
+      valueListenable: controller!,
+      builder: (context, value, child) {
+        return Stack(
+          children: [
+            WebViewWidget(key: widget.key, controller: _webViewController),
+            if (!value.isReady)
+              Container(
+                color: Colors.black,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 3.0,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 
   String _buildWistiaHTML(WistiaPlayerController controller) {

@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Added loading indicator with white circular progress bar on black background
+
 ## 1.1.0
 
 * Enable inline video playback on iOS devices

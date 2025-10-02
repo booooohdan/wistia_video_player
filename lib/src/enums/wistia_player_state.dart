@@ -1,4 +1,7 @@
 enum WistiaPlayerState {
+  /// Denotes state when player is loading
+  loading,
+
   /// Denotes state when player is not playing yet
   beforeplay,
 
