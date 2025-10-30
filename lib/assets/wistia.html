@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            overflow: hidden;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+        }
+
+        iframe,
+        .player {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <script>
+        // Apply custom button styling
+        (function () {
+            var style = document.createElement('style');
+            style.innerHTML = `
+                /* Modern Wistia Player - Big center play button */
+                .w-css-reset-tree button[data-handle="bigPlayButton"],
+                .w-css-reset-tree .w-big-play-button-backdrop,
+                .w-css-reset-tree [aria-label*="Play Video"],
+                .w-css-reset-tree [aria-label*="Pause Video"] {
+                    width: 80px !important;
+                    height: 80px !important;
+                }
+
+                /* Modern Wistia Player - Control bar play/pause button */
+                .w-css-reset-tree button[data-handle="playPauseButton"],
+                .w-css-reset-tree .w-playbar-play-button,
+                .w-css-reset-tree button[aria-label="Play"],
+                .w-css-reset-tree button[aria-label="Pause"] {
+                    width: 80px !important;
+                    height: 80px !important;
+                    min-width: 80px !important;
+                }
+
+                .w-css-reset-tree button[data-handle="playPauseButton"] svg,
+                .w-css-reset-tree .w-playbar-play-button svg,
+                .w-css-reset-tree button[aria-label="Play"] svg,
+                .w-css-reset-tree button[aria-label="Pause"] svg {
+                    width: 80px !important;
+                    height: 80px !important;
+                }
+
+                /* Modern Wistia Player - Rewind/Forward buttons */
+                .w-css-reset-tree button[data-handle="rewindButton"],
+                .w-css-reset-tree button[data-handle="aheadButton"],
+                .w-css-reset-tree button[aria-label="Rewind"],
+                .w-css-reset-tree button[aria-label="ahead"],
+                .w-css-reset-tree button[aria-label*="Skip back"],
+                .w-css-reset-tree button[aria-label*="Skip ahead"] {
+                    width: 50px !important;
+                    height: 50px !important;
+                    min-width: 50px !important;
+                }
+
+                .w-css-reset-tree button[data-handle="rewindButton"] svg,
+                .w-css-reset-tree button[data-handle="aheadButton"] svg {
+                    width: 50px !important;
+                    height: 50px !important;
+                }
+
+                /* Ensure proper scaling */
+                .w-css-reset-tree button[data-handle="bigPlayButton"] > div,
+                .w-css-reset-tree button[data-handle="playPauseButton"] > div,
+                .w-css-reset-tree button[data-handle="rewindButton"] > div,
+                .w-css-reset-tree button[data-handle="aheadButton"] > div {
+                    width: 100% !important;
+                    height: 100% !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+    </script>
+</head>
+
+<body>
+    <script src="https://fast.wistia.com/embed/medias/{{VIDEO_ID}}.jsonp" async></script>
+    <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+    <div class="wistia_embed wistia_async_{{VIDEO_ID}} {{PLAYER_OPTIONS}} player">&nbsp;</div>
+    <script>
+        window._wq = window._wq || [];
+        _wq.push({
+            id: "{{VIDEO_ID}}",
+            onReady: function (video) {
+                if (video.hasData()) {
+                    sendMessageToDart('Ready');
+                }
+                video.bind("play", function () {
+                    sendMessageToDart('Playing');
+                });
+
+                video.bind('pause', function () {
+                    sendMessageToDart('Paused');
+                });
+
+                video.bind("end", function (endTime) {
+                    sendMessageToDart('Ended', { endTime: endTime });
+                });
+
+                video.bind("percentwatchedchanged", function (percent, lastPercent) {
+                    sendMessageToDart('PercentChanged', { percent: percent, lastPercent: lastPercent });
+                });
+
+                video.bind("mutechange", function (isMuted) {
+                    sendMessageToDart('MuteChange', { isMuted: isMuted });
+                });
+
+                video.bind("enterfullscreen", function () {
+                    sendMessageToDart('EnterFullscreen');
+                });
+
+                video.bind("cancelfullscreen", function () {
+                    sendMessageToDart('CancelFullscreen');
+                });
+
+                video.bind("beforeremove", function () {
+                    return video.unbind;
+                });
+
+                window.play = function play() {
+                    return video.play();
+                };
+                window.pause = function pause() {
+                    return video.pause();
+                };
+                window.isMuted = function isMuted() {
+                    return video.isMuted();
+                };
+
+                window.inFullscreen = function inFullscreen() {
+                    return video.inFullscreen();
+                };
+
+                window.hasData = function hasData() {
+                    return video.hasData();
+                };
+
+                window.aspect = function aspect() {
+                    return video.aspect();
+                };
+
+                window.mute = function mute() {
+                    return video.mute();
+                };
+
+                window.unmute = function unmute() {
+                    return video.unmute();
+                };
+
+                window.duration = function duration() {
+                    return video.duration();
+                };
+            }
+        });
+
+        function sendMessageToDart(methodName, argsObject = {}) {
+            var message = {
+                'method': methodName,
+                'args': argsObject
+            };
+            WistiaWebView.postMessage(JSON.stringify(message));
+        }
+    </script>
+</body>
+
+</html>

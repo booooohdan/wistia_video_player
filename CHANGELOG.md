@@ -1,3 +1,10 @@
+## 1.2.0
+
+* **Refactoring**: Extracted HTML template to separate asset file for better maintainability
+* **UI Enhancement**: Added custom CSS styling to reduce Wistia player button sizes for more compact interface
+* **Button size optimization**: Standardized button sizes - 80px for main play/pause buttons, 50px for skip buttons
+* **Code organization**: Improved separation of concerns between Dart logic and HTML presentation
+
 ## 1.1.1
 
 * Added loading indicator with white circular progress bar on black background

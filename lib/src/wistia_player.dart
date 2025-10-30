@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -159,8 +160,8 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     }
   }
 
-  void _loadWistiaContent() {
-    final htmlContent = _buildWistiaHTML(controller!);
+  void _loadWistiaContent() async {
+    final htmlContent = await _buildWistiaHTML(controller!);
     _webViewController.loadHtmlString(htmlContent);
 
     controller?.updateValue(
@@ -229,121 +230,12 @@ class _WistiaPlayerState extends State<WistiaPlayer>
     );
   }
 
-  String _buildWistiaHTML(WistiaPlayerController controller) {
-    return '''
-      <!DOCTYPE html>
-      <html>
-        <head>
-        <style>
-          html,
-            body {
-                margin: 0;
-                padding: 0;
-                background-color: #000000;
-                overflow: hidden;
-                position: fixed;
-                height: 100%;
-                width: 100%;
-            }
-            iframe, .player {
-              display: block;
-              width: 100%;
-              height: 100%;
-              border: none;
-              }
-            </style>
-            <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-        </head>
-        <body>
-          <script src="https://fast.wistia.com/embed/medias/${controller.videoId}.jsonp" async></script>
-          <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
-          <div class="wistia_embed wistia_async_${controller.videoId} ${controller.options.toString()} player">&nbsp;</div>
-          <script>
-          window._wq = window._wq || [];
-          _wq.push({
-            id: "${controller.videoId}",
-            onReady: function(video) {
-                if (video.hasData()) {
-                  sendMessageToDart('Ready');
-                }
-                video.bind("play", function() {
-                  sendMessageToDart('Playing');
-                });
+  Future<String> _buildWistiaHTML(WistiaPlayerController controller) async {
+    final htmlTemplate = await rootBundle
+        .loadString('packages/wistia_video_player/assets/wistia.html');
 
-                video.bind('pause', function() {
-                  sendMessageToDart('Paused');
-                });
-
-                video.bind("end", function(endTime) {
-                  sendMessageToDart('Ended', { endTime: endTime });
-                });
-
-                video.bind("percentwatchedchanged", function(percent, lastPercent) {
-                  sendMessageToDart('PercentChanged', { percent: percent, lastPercent: lastPercent });
-                });
-
-                video.bind("mutechange", function (isMuted) {
-                  sendMessageToDart('MuteChange', { isMuted: isMuted });
-                });
-
-                video.bind("enterfullscreen", function() {
-                  sendMessageToDart('EnterFullscreen');
-                });
-
-                video.bind("cancelfullscreen", function() {
-                  sendMessageToDart('CancelFullscreen');
-                });
-
-                video.bind("beforeremove", function() {
-                  return video.unbind;
-                });
-
-                window.play = function play() {
-                  return video.play();
-                };
-                window.pause = function pause() {
-                  return video.pause();
-                };
-                window.isMuted = function isMuted() {
-                  return video.isMuted();
-                };
-
-                window.inFullscreen = function inFullscreen() {
-                  return video.inFullscreen();
-                };
-
-                window.hasData = function hasData() {
-                  return video.hasData();
-                };
-
-                window.aspect = function aspect() {
-                  return video.aspect();
-                };
-
-                window.mute = function mute() {
-                  return video.mute();
-                };
-
-                window.unmute = function unmute() {
-                  return video.unmute();
-                };
-
-                window.duration = function duration() {
-                  return video.duration();
-                };
-              }
-          });
-
-          function sendMessageToDart(methodName, argsObject = {}) {
-            var message = {
-              'method': methodName,
-              'args': argsObject
-            };
-            WistiaWebView.postMessage(JSON.stringify(message));
-          }
-          </script>
-        </body>
-      </html>
-    ''';
+    return htmlTemplate
+        .replaceAll('{{VIDEO_ID}}', controller.videoId)
+        .replaceAll('{{PLAYER_OPTIONS}}', controller.options.toString());
   }
 }
